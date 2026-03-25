@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For Tammy — From Serena</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Lato', sans-serif;
+      color: #2c1a0e;
+      overflow-x: hidden;
+    }
+
+    /* ── FULL PAGE BACKGROUND ── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663435002153/yrZUnyPrYEkActlo.jpeg');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.55) saturate(0.7);
+    }
+
+    /* soft white overlay to fade and soften */
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        to bottom,
+        rgba(255,248,240,0.55) 0%,
+        rgba(255,248,240,0.38) 40%,
+        rgba(255,248,240,0.55) 100%
+      );
+    }
+
+    /* ── CALLA LILY DECORATIONS ── */
+    .lily-left, .lily-right {
+      position: fixed;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.22;
+      filter: saturate(0.6) brightness(1.1);
+    }
+    .lily-left {
+      left: -60px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 320px;
+    }
+    .lily-right {
+      right: -60px;
+      top: 50%;
+      transform: translateY(-50%) scaleX(-1);
+      width: 320px;
+    }
+
+    /* ── WELCOME SCREEN ── */
+    #welcome-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(160deg, rgba(20,10,5,0.92) 0%, rgba(60,25,10,0.92) 50%, rgba(20,10,5,0.92) 100%);
+      backdrop-filter: blur(4px);
+    }
+    #welcome-screen.hidden { display: none; }
+
+    .welcome-flowers {
+      font-size: 2.5rem;
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.4rem;
+    }
+    .welcome-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      color: #f5e0c8;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+    .welcome-sub {
+      font-size: 1rem;
+      color: rgba(245,224,200,0.65);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    .open-btn {
+      background: linear-gradient(135deg, #c0784a, #8b4513);
+      color: #fff;
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-family: 'Playfair Display', serif;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 6px 24px rgba(139,69,19,0.5);
+    }
+    .open-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(139,69,19,0.6);
+    }
+    .welcome-note {
+      margin-top: 1.5rem;
+      font-size: 0.82rem;
+      color: rgba(245,224,200,0.4);
+      font-style: italic;
+    }
+
+    /* ── MAIN CONTENT ── */
+    #main-content {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    /* ── LETTER CARD ── */
+    .letter-card {
+      background: rgba(255, 252, 247, 0.88);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      max-width: 720px;
+      width: 100%;
+      padding: clamp(2rem, 5vw, 4rem);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(192,120,74,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle lily watermark inside card */
+    .letter-card::before {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      right: -40px;
+      width: 260px;
+      height: 260px;
+      background-image: url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663435002153/RkCxhdFfBNllMGQW.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.07;
+      border-radius: 50%;
+      filter: saturate(0.5);
+    }
+
+    .letter-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(192,120,74,0.25);
+    }
+    .letter-header .flowers {
+      font-size: 1.8rem;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.3rem;
+    }
+    .letter-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      color: #6b3a1f;
+      font-style: italic;
+      margin-bottom: 0.3rem;
+    }
+    .letter-header .from-line {
+      font-size: 0.9rem;
+      color: #9a6a4a;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── VOICE CONTROLS ── */
+    .voice-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: rgba(192,120,74,0.1);
+      border: 1px solid rgba(192,120,74,0.25);
+      border-radius: 50px;
+      padding: 0.6rem 1.2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .voice-label {
+      font-size: 0.82rem;
+      color: #7a4a2a;
+      font-style: italic;
+    }
+    .voice-btn {
+      background: linear-gradient(135deg, #c0784a, #8b4513);
+      color: #fff;
+      border: none;
+      padding: 0.45rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-family: 'Playfair Display', serif;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 3px 10px rgba(139,69,19,0.3);
+    }
+    .voice-btn:hover { transform: translateY(-1px); }
+    .voice-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+    #voice-status {
+      font-size: 0.78rem;
+      color: #9a6a4a;
+      font-style: italic;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    /* ── LETTER BODY ── */
+    .letter-body {
+      font-size: clamp(1rem, 2.2vw, 1.1rem);
+      line-height: 1.9;
+      color: #2c1a0e;
+      position: relative;
+      z-index: 1;
+    }
+    .letter-body .salutation {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+      color: #6b3a1f;
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+    .letter-body p {
+      margin-bottom: 1.4rem;
+    }
+    .letter-body .poem-section {
+      margin: 2rem 0;
+      padding: 1.5rem 2rem;
+      border-left: 3px solid rgba(192,120,74,0.4);
+      background: rgba(192,120,74,0.05);
+      border-radius: 0 12px 12px 0;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(0.95rem, 2vw, 1.05rem);
+      line-height: 2;
+      color: #5a3020;
+    }
+    .letter-body .closing {
+      margin-top: 2.5rem;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: #6b3a1f;
+      font-size: 1.05rem;
+    }
+    .letter-body .signature {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      color: #8b4513;
+      margin-top: 0.5rem;
+    }
+    .letter-body .heart {
+      font-size: 1.5rem;
+      display: block;
+      margin-top: 0.3rem;
+    }
+
+    /* ── MUSIC SECTION ── */
+    .music-section {
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(192,120,74,0.25);
+      text-align: center;
+    }
+    .music-label {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: #9a6a4a;
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+    }
+    .music-label strong {
+      display: block;
+      font-size: 1rem;
+      color: #6b3a1f;
+      margin-top: 0.3rem;
+    }
+    .music-player {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    /* ── FOOTER ── */
+    .letter-footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.78rem;
+      color: rgba(255,248,240,0.5);
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      .lily-left, .lily-right { width: 180px; opacity: 0.15; }
+      .lily-left { left: -50px; }
+      .lily-right { right: -50px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background layers -->
+  <div class="bg-layer"></div>
+  <div class="bg-overlay"></div>
+
+  <!-- Faded calla lily decorations on sides -->
+  <img class="lily-left" src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663435002153/RkCxhdFfBNllMGQW.jpg" alt=""/>
+  <img class="lily-right" src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663435002153/RkCxhdFfBNllMGQW.jpg" alt=""/>
+
+  <!-- Welcome / Entry Screen -->
+  <div id="welcome-screen">
+    <div class="welcome-flowers">🌸 💙 🌸</div>
+    <h1 class="welcome-title">A Letter for Tammy</h1>
+    <p class="welcome-sub">From Serena — with all her heart</p>
+    <button class="open-btn" onclick="openLetter()">Open Your Letter 💙</button>
+    <p class="welcome-note">The letter will be read aloud to you when you open it.</p>
+  </div>
+
+  <!-- Main Letter Content -->
+  <div id="main-content" style="display:none;">
+
+    <div class="letter-card">
+
+      <div class="letter-header">
+        <div class="flowers">🌸 🌺 💛 🌸</div>
+        <h1>For Tammy</h1>
+        <div class="from-line">From Serena &nbsp;·&nbsp; With All My Love</div>
+      </div>
+
+      <!-- Voice Controls -->
+      <div class="voice-bar">
+        <span class="voice-label">🎙 Have the letter read to you:</span>
+        <button class="voice-btn" id="btn-read" onclick="startReading()">▶ Read to Me</button>
+        <button class="voice-btn" id="btn-pause" onclick="pauseReading()" disabled>⏸ Pause</button>
+        <button class="voice-btn" id="btn-stop" onclick="stopReading()" disabled>⏹ Stop</button>
+        <span id="voice-status">Ready</span>
+      </div>
+
+      <!-- Letter Body -->
+      <div class="letter-body" id="letter-text">
+        <div class="salutation">Dear Tammy,</div>
+
+        <p>There is a difference between a mother and a momma. A mother is biology. A momma is a choice — and you chose me.</p>
+
+        <p>You were in my life before I even knew how much I would need you. Back when Kris and Shaun were in preschool — you were already there. Already mine. You did not have to do that. But that is who you are. The kind of woman who shows up before she is even asked.</p>
+
+        <p>My sister and I share the same birth mother. She was the one who let me go — threw me away like I did not matter. I was young. I was lost. I was falling. And even when I got sent off for nothing, you were still there. You did not abandon me when everyone else did. You caught me. You did not let me fall. Not once. Not ever.</p>
+
+        <p>And then there was Austin. Thirteen years younger than me — that tiny, wiggly little baby. I could not stay away from him. I was so amazed by him. He was pure joy walking around in a little body, and the way I loved him from the very first moment — that was because of the home you built. That was because of you.</p>
+
+        <p>You led me to God. You led me to my baptism. That is not a small thing, Tammy. That is everything. That is a gift that does not expire, does not fade, and cannot be taken from me. Whatever else life has thrown at me — and it has thrown plenty — I have held onto that. You gave me that.</p>
+
+        <p>I think about the morning Lucas died. The room was full of family — people everywhere — but grief has a way of making you invisible even in a crowd. I was in that corner, unreachable, and the world kept moving around me like I was not there. And then you turned. You saw me. And in the middle of that room full of people, you came to me. In that morning, in the worst moment of my life, you walked over to that corner and you did not let me be alone in it. That was the real mom I needed. That was the one I got. You cannot know what that meant. You cannot know what it still means.</p>
+
+        <p>And then we lost Shaun — my precious brother, your son. A new kind of grief. A depth of loss that nothing fixes and time does not touch the way people say it will. I know what it costs you. I know what it still costs you every single day. And I want you to know — just as you came to me in my darkest corner, I am here in yours. That is what we are to each other. We show up. We always have.</p>
+
+        <p>Our bond cannot be broken. Everybody already knows it. We will never be too far apart — not really. Not where it counts.</p>
+
+        <p>You believe in me even when you do not fully understand what I am building. That kind of faith is rare. That kind of love is rare. We have a mission together — and I know you are with me even when the road does not make sense yet. It will. I promise you it will.</p>
+
+        <div class="poem-section">
+          You are my momma.<br/>
+          Not by blood — by something stronger than blood.<br/>
+          By love. By choice. By grace.<br/>
+          By every hospital room, every hard night,<br/>
+          every moment you turned and came for me<br/>
+          when nobody else did.<br/>
+          By leading me to God.<br/>
+          By never letting me fall.<br/><br/>
+          Thank you for catching me when my birth mother let me go.<br/>
+          Thank you for Kris, for Shaun, for Austin —<br/>
+          for every memory that came with being part of your world.<br/>
+          Thank you for that morning with Lucas —<br/>
+          for turning around and coming to that corner.<br/>
+          Thank you for my baptism, for leading me to God,<br/>
+          for giving me something no one can ever take away.<br/>
+          Thank you for still being here now,<br/>
+          when I am 42 years old and I still need you.<br/>
+          Thank you for believing in a mission you may not fully see yet — but you will.<br/><br/>
+          I love you. I am so grateful God put you in my path<br/>
+          before I even knew I needed you.<br/><br/>
+          You are one of the greatest blessings of my entire life.
+        </div>
+
+        <div class="closing">All my love, always —</div>
+        <div class="signature">Serena</div>
+        <span class="heart">💙</span>
+      </div>
+
+      <!-- Music Section -->
+      <div class="music-section">
+        <div class="music-label">
+          A song that says what words can't always reach
+          <strong>In My Daughter's Eyes &nbsp;·&nbsp; Martina McBride</strong>
+        </div>
+        <iframe
+          class="music-player"
+          src="https://open.spotify.com/embed/track/3hRV0jL3vUpRrcy398teAU?utm_source=generator&theme=0"
+          width="100%"
+          height="152"
+          frameborder="0"
+          allowfullscreen=""
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy">
+        </iframe>
+      </div>
+
+    </div><!-- end letter-card -->
+
+    <div class="letter-footer">
+      Made with love &nbsp;·&nbsp; For Tammy, always 💙
+    </div>
+
+  </div><!-- end main-content -->
+
+  <script>
+    // ── TEXT TO SPEECH ──
+    const letterParagraphs = [
+      "Dear Tammy.",
+      "There is a difference between a mother and a momma. A mother is biology. A momma is a choice — and you chose me.",
+      "You were in my life before I even knew how much I would need you. Back when Kris and Shaun were in preschool — you were already there. Already mine. You did not have to do that. But that is who you are. The kind of woman who shows up before she is even asked.",
+      "My sister and I share the same birth mother. She was the one who let me go — threw me away like I did not matter. I was young. I was lost. I was falling. And even when I got sent off for nothing, you were still there. You did not abandon me when everyone else did. You caught me. You did not let me fall. Not once. Not ever.",
+      "And then there was Austin. Thirteen years younger than me — that tiny, wiggly little baby. I could not stay away from him. I was so amazed by him. He was pure joy walking around in a little body, and the way I loved him from the very first moment — that was because of the home you built. That was because of you.",
+      "You led me to God. You led me to my baptism. That is not a small thing, Tammy. That is everything. That is a gift that does not expire, does not fade, and cannot be taken from me. Whatever else life has thrown at me — and it has thrown plenty — I have held onto that. You gave me that.",
+      "I think about the morning Lucas died. The room was full of family — people everywhere — but grief has a way of making you invisible even in a crowd. I was in that corner, unreachable, and the world kept moving around me like I was not there. And then you turned. You saw me. And in the middle of that room full of people, you came to me. In that morning, in the worst moment of my life, you walked over to that corner and you did not let me be alone in it. That was the real mom I needed. That was the one I got. You cannot know what that meant. You cannot know what it still means.",
+      "And then we lost Shaun — my precious brother, your son. A new kind of grief. A depth of loss that nothing fixes and time does not touch the way people say it will. I know what it costs you. I know what it still costs you every single day. And I want you to know — just as you came to me in my darkest corner, I am here in yours. That is what we are to each other. We show up. We always have.",
+      "Our bond cannot be broken. Everybody already knows it. We will never be too far apart — not really. Not where it counts.",
+      "You believe in me even when you do not fully understand what I am building. That kind of faith is rare. That kind of love is rare. We have a mission together — and I know you are with me even when the road does not make sense yet. It will. I promise you it will.",
+      "You are my momma. Not by blood — by something stronger than blood. By love. By choice. By grace. By every hospital room, every hard night, every moment you turned and came for me when nobody else did. By leading me to God. By never letting me fall.",
+      "Thank you for catching me when my birth mother let me go. Thank you for Kris, for Shaun, for Austin — for every memory that came with being part of your world. Thank you for that morning with Lucas — for turning around and coming to that corner. Thank you for my baptism, for leading me to God, for giving me something no one can ever take away. Thank you for still being here now, when I am 42 years old and I still need you. Thank you for believing in a mission you may not fully see yet — but you will.",
+      "I love you. I am so grateful God put you in my path before I even knew I needed you. You are one of the greatest blessings of my entire life.",
+      "All my love, always — Serena."
+    ];
+
+    let utteranceQueue = [];
+    let currentIndex = 0;
+    let isPaused = false;
+    let isReading = false;
+
+    function getVoice() {
+      const voices = window.speechSynthesis.getVoices();
+      // prefer a warm female US English voice
+      const preferred = ['Samantha', 'Karen', 'Victoria', 'Susan', 'Zira', 'Google US English'];
+      for (const name of preferred) {
+        const v = voices.find(v => v.name.includes(name));
+        if (v) return v;
+      }
+      return voices.find(v => v.lang.startsWith('en')) || voices[0] || null;
+    }
+
+    function setStatus(text) {
+      document.getElementById('voice-status').textContent = text;
+    }
+
+    function startReading() {
+      if (isPaused) {
+        window.speechSynthesis.resume();
+        isPaused = false;
+        setStatus('Reading…');
+        document.getElementById('btn-pause').disabled = false;
+        document.getElementById('btn-read').disabled = true;
+        return;
+      }
+      window.speechSynthesis.cancel();
+      currentIndex = 0;
+      isReading = true;
+      document.getElementById('btn-read').disabled = true;
+      document.getElementById('btn-pause').disabled = false;
+      document.getElementById('btn-stop').disabled = false;
+      readNext();
+    }
+
+    function readNext() {
+      if (currentIndex >= letterParagraphs.length) {
+        setStatus('Done ♡');
+        document.getElementById('btn-read').disabled = false;
+        document.getElementById('btn-pause').disabled = true;
+        document.getElementById('btn-stop').disabled = true;
+        isReading = false;
+        return;
+      }
+      const utter = new SpeechSynthesisUtterance(letterParagraphs[currentIndex]);
+      utter.rate = 0.88;
+      utter.pitch = 1.05;
+      utter.volume = 1;
+      const voice = getVoice();
+      if (voice) utter.voice = voice;
+      utter.onstart = () => setStatus('Reading…');
+      utter.onend = () => {
+        currentIndex++;
+        if (isReading && !isPaused) readNext();
+      };
+      utter.onerror = () => {
+        currentIndex++;
+        if (isReading) readNext();
+      };
+      window.speechSynthesis.speak(utter);
+    }
+
+    function pauseReading() {
+      if (window.speechSynthesis.speaking && !isPaused) {
+        window.speechSynthesis.pause();
+        isPaused = true;
+        setStatus('Paused');
+        document.getElementById('btn-read').disabled = false;
+        document.getElementById('btn-read').textContent = '▶ Resume';
+        document.getElementById('btn-pause').disabled = true;
+      }
+    }
+
+    function stopReading() {
+      window.speechSynthesis.cancel();
+      isReading = false;
+      isPaused = false;
+      currentIndex = 0;
+      setStatus('Ready');
+      document.getElementById('btn-read').disabled = false;
+      document.getElementById('btn-read').textContent = '▶ Read to Me';
+      document.getElementById('btn-pause').disabled = true;
+      document.getElementById('btn-stop').disabled = true;
+    }
+
+    // preload voices
+    window.speechSynthesis.onvoiceschanged = () => {};
+
+    // ── OPEN LETTER ──
+    function openLetter() {
+      document.getElementById('welcome-screen').classList.add('hidden');
+      document.getElementById('main-content').style.display = 'flex';
+      // auto-start reading after a short pause
+      setTimeout(() => {
+        startReading();
+      }, 1200);
+    }
+  </script>
+
+</body>
+</html>
