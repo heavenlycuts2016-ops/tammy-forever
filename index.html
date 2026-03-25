@@ -75,6 +75,7 @@
       backdrop-filter: blur(4px);
     }
     #welcome-screen.hidden { display: none; }
+    #password-screen.hidden { display: none; }
 
     .welcome-flowers {
       font-size: 2.5rem;
@@ -326,8 +327,26 @@
   <img class="lily-left" src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663435002153/RkCxhdFfBNllMGQW.jpg" alt=""/>
   <img class="lily-right" src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663435002153/RkCxhdFfBNllMGQW.jpg" alt=""/>
 
+  <!-- Password Screen -->
+  <div id="password-screen" style="position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;background:linear-gradient(160deg,rgba(20,10,5,0.92) 0%,rgba(60,25,10,0.92) 50%,rgba(20,10,5,0.92) 100%);backdrop-filter:blur(4px);">
+    <div class="welcome-flowers">💙 🌸 💙</div>
+    <h1 class="welcome-title">This letter is just for you</h1>
+    <p class="welcome-sub">Enter the password to open it</p>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:0.8rem;width:100%;max-width:280px;">
+      <input
+        id="pw-input"
+        type="password"
+        placeholder="Password"
+        onkeydown="if(event.key==='Enter') checkPassword()"
+        style="width:100%;padding:0.85rem 1.2rem;border-radius:50px;border:1px solid rgba(245,224,200,0.35);background:rgba(255,255,255,0.1);color:#f5e0c8;font-size:1rem;text-align:center;outline:none;letter-spacing:0.15em;"
+      />
+      <button class="open-btn" onclick="checkPassword()">Open 💙</button>
+      <p id="pw-error" style="color:#e07070;font-size:0.85rem;font-style:italic;min-height:1.2em;"></p>
+    </div>
+  </div>
+
   <!-- Welcome / Entry Screen -->
-  <div id="welcome-screen">
+  <div id="welcome-screen" class="hidden">
     <div class="welcome-flowers">🌸 💙 🌸</div>
     <h1 class="welcome-title">A Letter for Tammy</h1>
     <p class="welcome-sub">From Serena — with all her heart</p>
@@ -433,6 +452,20 @@
   </div><!-- end main-content -->
 
   <script>
+    // ── PASSWORD ──
+    function checkPassword() {
+      const val = document.getElementById('pw-input').value;
+      if (val.trim().toLowerCase() === 'pooch') {
+        document.getElementById('password-screen').classList.add('hidden');
+        document.getElementById('welcome-screen').classList.remove('hidden');
+        document.getElementById('pw-error').textContent = '';
+      } else {
+        document.getElementById('pw-error').textContent = 'That\'s not quite right — try again 💙';
+        document.getElementById('pw-input').value = '';
+        document.getElementById('pw-input').focus();
+      }
+    }
+
     // ── TEXT TO SPEECH ──
     const letterParagraphs = [
       "Dear Tammy.",
