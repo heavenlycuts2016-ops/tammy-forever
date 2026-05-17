@@ -323,24 +323,8 @@
   <div class="bg-layer"></div>
   <div class="bg-overlay"></div>
 
-  <!-- ── PASSWORD SCREEN ── -->
-  <div id="password-screen" class="screen">
-    <div class="screen-flowers">✝️ 🌸 🌺 💛 🌸 ✝️</div>
-    <h1 class="screen-title">This letter is just for you</h1>
-    <p class="screen-sub">Enter the password to open it</p>
-    <input
-      id="pw-input"
-      class="pw-input"
-      type="password"
-      placeholder="Password"
-      onkeydown="if(event.key==='Enter') checkPassword()"
-    />
-    <button class="action-btn" onclick="checkPassword()">Open 💙</button>
-    <p id="pw-error" class="pw-error"></p>
-  </div>
-
   <!-- ── WELCOME SCREEN ── -->
-  <div id="welcome-screen" class="screen hidden">
+  <div id="welcome-screen" class="screen">
     <div class="screen-flowers">🌸 🌺 💛 🌼 🌸</div>
     <h1 class="screen-title">A Letter for Tammy</h1>
     <p class="screen-sub">From Serena — with all her heart</p>
@@ -449,20 +433,6 @@
   </div><!-- end main-content -->
 
   <script>
-    // ── PASSWORD ──
-    function checkPassword() {
-      const val = document.getElementById('pw-input').value;
-      if (val.trim().toLowerCase() === 'pooch') {
-        document.getElementById('password-screen').classList.add('hidden');
-        document.getElementById('welcome-screen').classList.remove('hidden');
-        document.getElementById('pw-error').textContent = '';
-      } else {
-        document.getElementById('pw-error').textContent = "That's not quite right — try again 💙";
-        document.getElementById('pw-input').value = '';
-        document.getElementById('pw-input').focus();
-      }
-    }
-
     // ── OPEN LETTER ──
     function openLetter() {
       document.getElementById('welcome-screen').classList.add('hidden');
